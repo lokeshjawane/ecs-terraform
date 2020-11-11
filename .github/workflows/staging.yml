@@ -24,8 +24,11 @@ jobs:
       - name: Terraform fmt
         id: fmt
         run: |
+         cd deploy
          terraform --version
          terraform init
+         terraform plan
+         terraform apply
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
