@@ -25,7 +25,7 @@ jobs:
         id: fmt
         run: |
          terraform --version
-         terraform fmt -check
+         terraform init
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
