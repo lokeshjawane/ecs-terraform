@@ -23,7 +23,9 @@ jobs:
 
       - name: Terraform fmt
         id: fmt
-        run: terraform fmt -check
+        run: |
+         terraform --version
+         terraform fmt -check
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
