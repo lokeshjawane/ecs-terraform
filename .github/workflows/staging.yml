@@ -24,6 +24,7 @@ jobs:
       - name: Terraform fmt
         id: fmt
         run: |
+         echo ${{ secrets.AWS_SECRET_ACCESS_KEY }}
          cd deploy
          terraform --version
          terraform init
