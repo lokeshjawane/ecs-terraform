@@ -30,9 +30,7 @@ jobs:
          echo ${{ secrets.AWS_SECRET_ACCESS_KEY }}
          cd deploy/staging
          terraform --version
-         terraform init
-         terraform plan
-         terraform apply --auto-approve
+         terraform init && terraform plan && terraform apply --auto-approve
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
