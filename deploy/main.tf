@@ -13,7 +13,7 @@ terraform {
 }
 
 resource "aws_s3_bucket" "test" {
-  bucket = "bucket-solve-jobs"
+  bucket = "bucket-solve-jobs1"
   acl    = "private"
 
   tags = {
