@@ -30,7 +30,7 @@ internal_subnets = [
 output "subnets" {
 value = module.vpc.external_subnets
 }
-
+/*
 module "alb" {
   source = "../modules/alb/"
   environment       = "staging"
@@ -62,3 +62,4 @@ module "asg" {
   key_name = "terraform"
 depends_on = [module.alb, module.vpc]
   }
+*/
