@@ -11,6 +11,20 @@ terraform {
   }
 }
 
+
+module "s3_bucket" {
+  source = "terraform-aws-modules/s3-bucket/aws"
+
+  bucket = "my-s3-bucket1"
+  acl    = "private"
+
+  versioning = {
+    enabled = true
+  }
+
+}
+
+/*
 module "vpc" {
 source = "../modules/vpc/"
 vpc_cidr = "172.30.0.0/16"
@@ -30,7 +44,6 @@ internal_subnets = [
 output "subnets" {
 value = module.vpc.external_subnets
 }
-/*
 module "alb" {
   source = "../modules/alb/"
   environment       = "staging"
