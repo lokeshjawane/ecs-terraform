@@ -53,7 +53,7 @@ module "asg" {
   max_size =  2
   min_size =  1
   cloudwatch_prefix = "staging-solvejobs"
-  instance_group    = "staging-solvejobs"
+  instance_group    = "solvejobs"
   vpc_id            = module.vpc.id
   aws_ami           = "ami-00ddb0e5626798373"
   iam_instance_profile_id = "terraform-ec2"
