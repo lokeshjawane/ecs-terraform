@@ -43,3 +43,7 @@ jobs:
       - name: "Run - Terraform Plan"
         id: plan
         run: cd deploy/staging && terraform plan -input=false -no-color
+
+      - name: "Run - Terraform Apply"
+        id: applly
+        run: cd deploy/staging && terraform plan -auto-approve
