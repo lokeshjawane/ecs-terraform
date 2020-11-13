@@ -60,5 +60,4 @@ module "asg" {
   private_subnet_ids       = module.vpc.external_subnets
   target_groups = [module.alb.default_alb_target_group]
   key_name = "terraform"
-depends_on = [module.alb, module.vpc]
   }
