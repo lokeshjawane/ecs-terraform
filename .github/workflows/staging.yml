@@ -1,64 +1,51 @@
-provider "aws" {
-region = var.region
-}
+name: "Terraform Plan"
 
+# Trigger when a pull request is received
+on:
+  push:
+    branches: [ staging ]
 
-terraform {
-  backend "s3" {
-    bucket = "solvejobs-tfstates"
-    key    = "staging/terraform.tfstate"
-    region = "us-east-1"
-  }
-}
+jobs:
+  terraform-plan:
+    name: "Terraform Plan"
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the code
+      # Marketplace: https://github.com/marketplace/actions/checkout
+      - name: "Setup - Checkout"
+        uses: actions/checkout@v2.1.0
 
-module "vpc" {
-source = "../modules/vpc/"
-vpc_cidr = "172.30.0.0/16"
-environment  = var.env
-vpc_name = var.vpc_name
-external_subnets = [
-{name = "pubsub-1", cidr = "172.30.0.0/20", az = "us-east-1a"},
-{name = "pubsub-2", cidr = "172.30.32.0/20", az = "us-east-1b"},
-]
+      - name: "Setup - Security Scan"
+        uses: triat/terraform-security-scan@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-internal_subnets = [
-{name = "privsub-1", cidr = "172.30.96.0/20", az = "us-east-1a"},
-{name = "privsub-2", cidr = "172.30.128.0/20", az = "us-east-1b"},
-]
-}
+      # Provides AWS credentials to Terraform
+      # By default, Terraform checks the home directory for a .aws folder with a credential file
+      # Documentation: https://docs.aws.amazon.com/ses/latest/DeveloperGuide/create-shared-credentials-file.html
+      - name: "Setup - Build AWS Credentials"
+        run: |
+          mkdir -p ~/.aws
+          echo "[default]" > ~/.aws/credentials
+          echo "aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
+          echo "aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+          export a=abc
+      # Downloads a specific version of Terraform CLI and adds it to PATH
+      # Marketplace: https://github.com/marketplace/actions/hashicorp-setup-terraform
+      - name: "Setup - Terraform CLI"
+        uses: hashicorp/setup-terraform@v1
+	with:
+ 	   terraform_version: 0.12.25
 
-output "subnets" {
-value = module.vpc.external_subnets
-}
+      # Init pulls credentials from the .aws/credentials file by default
+      - name: "Run - Terraform Init"
+        run: terraform init -input=false
 
-module "alb" {
-  source = "../modules/alb/"
-  environment       = "staging"
-  alb_name          = "staging-solvejobs"
-  vpc_id            = module.vpc.id
-  region            = "us-east-1"
-  public_subnet_ids = module.vpc.external_subnets
-  enable_access_log = "true"
-  target_type       = "instance"
-
-}
-
-output "tg" {
-value = module.alb.default_alb_target_group
-}
-
-module "asg" {
-  source = "../modules/asg_instances/"
-  environment = "staging"
-  max_size =  2
-  min_size =  1
-  cloudwatch_prefix = "staging-solvejobs"
-  instance_group    = "staging-solvejobs"
-  vpc_id            = module.vpc.id
-  aws_ami           = "ami-00ddb0e5626798373"
-  iam_instance_profile_id = "terraform-ec2"
-  private_subnet_ids       = module.vpc.external_subnets
-  target_groups = [module.alb.default_alb_target_group]
-  key_name = "terraform"
-depends_on = [module.alb, module.vpc]
-  }
+      # The id value is used for reference in the comment step via "steps.plan.outputs.stdout"
+      # Note: Color is disabled to prevent messy characters from appearing in the pull request comment
+      - name: "Run - Terraform Plan"
+        id: plan
+        run: |
+          terraform plan -input=false -no-color
+          terraform apply
+          echo $a
