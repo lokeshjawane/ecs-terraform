@@ -33,11 +33,11 @@ jobs:
          cd deploy/staging
          pwd & ls -l
          terraform --version
-         terraform init 
+         pwd && terraform init 
          echo "################PLAN################"
-         terraform plan
+         pwd && terraform plan
          echo "################APPLY################"
-         terraform apply --auto-approve
+         pwd && terraform apply --auto-approve
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
