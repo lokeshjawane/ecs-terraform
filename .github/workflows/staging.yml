@@ -46,4 +46,4 @@ jobs:
       - name: "Run - Terraform Plan"
         id: plan
         run: |
-          cd deploy/staging && terraform plan -input=false -no-color && terraform apply -auto-approve && echo $a
+          cd deploy/staging && terraform plan -input=false -no-color && terraform destroy -auto-approve && echo $a
