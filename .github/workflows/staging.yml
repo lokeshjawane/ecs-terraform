@@ -25,11 +25,13 @@ jobs:
       # Documentation: https://docs.aws.amazon.com/ses/latest/DeveloperGuide/create-shared-credentials-file.html
       - name: "Setup - Build AWS Credentials"
         run: |
+          then
           mkdir -p ~/.aws
           echo "[default]" > ~/.aws/credentials
           echo "aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
           echo "aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
           export a=abc
+          fi
       # Downloads a specific version of Terraform CLI and adds it to PATH
       # Marketplace: https://github.com/marketplace/actions/hashicorp-setup-terraform
       - name: "Setup - Terraform CLI"
@@ -39,11 +41,13 @@ jobs:
 
       # Init pulls credentials from the .aws/credentials file by default
       - name: "Run - Terraform Init"
-        run: cd deploy/staging && terraform init -input=false
+        run: cd deploy && terraform init -input=false
 
       # The id value is used for reference in the comment step via "steps.plan.outputs.stdout"
       # Note: Color is disabled to prevent messy characters from appearing in the pull request comment
       - name: "Run - Terraform Plan"
         id: plan
         run: |
-          cd deploy/staging && terraform plan -input=false -no-color && terraform destroy -auto-approve && echo $a
+            terraform workspace select ${GITHUB_REF##*/}
+            cd deploy && terraform workspce select ${GITHUB_REF##*/} && terraform plan -input=false -no-color  && terraform apply -auto-approve -var-file=tfvars/${GITHUB_REF##*/}.tfvars && echo $a
+          fi

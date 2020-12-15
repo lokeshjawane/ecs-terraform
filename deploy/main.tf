@@ -7,7 +7,7 @@ region = "us-east-1"
 terraform {
   backend "s3" {
     bucket = "solvejobs-tfstates"
-    key    = "staging"
+    key    = "testing"
     region = "us-east-1"
   }
 }
