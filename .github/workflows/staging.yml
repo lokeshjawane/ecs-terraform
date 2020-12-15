@@ -37,7 +37,7 @@ jobs:
       - name: "Setup - Terraform CLI"
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 0.13.5
+          terraform_version: v0.13.5
 
       # Init pulls credentials from the .aws/credentials file by default
       - name: "Run - Terraform Init"
