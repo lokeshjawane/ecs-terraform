@@ -10,7 +10,6 @@ resource "aws_vpc" "main" {
   tags = {
     "Name"        = "${var.environment}-${var.vpc_name}"
     "Environment" = var.environment
-    "ManagedBy"   = "CloudCover"
   }
 }
 
