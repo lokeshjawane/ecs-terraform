@@ -48,4 +48,4 @@ jobs:
         run: |
             cd deploy/staging
             terraform  workspace list | grep ${GITHUB_REF##*/} && echo "pass" || terraform workspace new ${GITHUB_REF##*/}
-            terraform workspace select ${GITHUB_REF##*/} && terraform plan -input=false -no-color  && terraform destroy -auto-approve -var-file=tfvars/${GITHUB_REF##*/}.tfvars && echo $a
+            terraform workspace select ${GITHUB_REF##*/} && terraform plan -input=false -no-color  && terraform apply -auto-approve -var-file=tfvars/${GITHUB_REF##*/}.tfvars && echo $a
