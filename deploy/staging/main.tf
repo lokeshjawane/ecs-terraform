@@ -16,6 +16,7 @@ required_version = "0.13.5"
       source = "hashicorp/aws"
     }
 }
+}
 
 
 module "vpc" {
