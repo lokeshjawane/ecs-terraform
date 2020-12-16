@@ -3,7 +3,7 @@ name: "test action"
 # Trigger when a pull request is received
 on:
   push:
-    branches: [ staging ]
+    branches: [ staging1 ]
 
 jobs:
   terraform-plan:
