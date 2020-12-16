@@ -46,6 +46,6 @@ jobs:
       - name: "Run - Terraform Plan"
         id: plan
         run: |
-            terraform  workspace list | grep ${GITHUB_REF##*/} && echo "pass" || terraform workspace select ${GITHUB_REF##*/}
+            terraform  workspace list | grep ${GITHUB_REF##*/} && echo "pass" || terraform workspace new ${GITHUB_REF##*/}
             terraform workspace select ${GITHUB_REF##*/}
             cd deploy && terraform workspce select ${GITHUB_REF##*/} && terraform plan -input=false -no-color  && terraform apply -auto-approve -var-file=tfvars/${GITHUB_REF##*/}.tfvars && echo $a
