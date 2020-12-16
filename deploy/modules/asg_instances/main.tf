@@ -28,18 +28,37 @@ resource "aws_security_group_rule" "outbound_internet_access" {
 
 resource "aws_security_group_rule" "inbound_internet_access" {
   type              = "ingress"
-  from_port         = 80
-  to_port           = 80
+  from_port         = 8881
+  to_port           = 8881
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.instance.id}"
 }
 
+resource "aws_security_group_rule" "inbound_ssh_access" {
+  type              = "ingress"
+  description       = "allow ssh access from bastion"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  source_security_group_id = var.bastion_sg
+  security_group_id = "${aws_security_group.instance.id}"
+}
 resource "aws_lb_target_group" "default" {
-  count	   = "${length(var.target_groups) == 0 ? 1 : 0}"
+  count	   = length(var.target_groups) == 0 ? 1 : 0
   name     = "${var.environment}-${var.instance_group}-tg"
-  port     = "${var.health_check_port}"
-  protocol = "HTTP"
+  port     = "${var.target_group_port}"
+  health_check  {
+  path     = "${var.health_check_path}"
+  enabled = true
+  interval = 30
+  timeout  = 5
+  healthy_threshold = 2
+  unhealthy_threshold = 2
+  matcher = "200,202,302"
+  port = "${var.health_check_port}"
+  protocol = "${var.health_check_protocol}"
+  }
   vpc_id   = "${var.vpc_id}"
 }
 
@@ -76,8 +95,7 @@ resource "aws_autoscaling_group" "asg_with_new_tg"  {
   force_delete         = true
   launch_configuration = "${aws_launch_configuration.launch.id}"
   vpc_zone_identifier  = "${var.private_subnet_ids}"
-#  target_group_arns = ["${aws_lb_target_group.default.id}"]
-  target_group_arns = ["abc"]
+  target_group_arns = [aws_lb_target_group.default[0].id]
   termination_policies  =  "${var.termination_policies}"
   tag {
     key                 = "Name"

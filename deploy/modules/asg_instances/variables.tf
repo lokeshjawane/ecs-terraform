@@ -98,6 +98,20 @@ variable "termination_policies" {
   description = "termination polici for ASG"
 }
 
+variable "target_group_port" {
+   default = 80
+}
+
 variable "health_check_port" {
    default = 80
+}
+
+variable "health_check_path" {
+   default = "/"
+}
+variable "health_check_protocol" {
+   default = "HTTP"
+}
+variable "bastion_sg" {
+default = []
 }

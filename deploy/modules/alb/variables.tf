@@ -36,6 +36,20 @@ variable "health_check_path" {
   description = "The default health check path"
 }
 
+variable "health_check_port" {
+  default     = "8080"
+}
+
+variable "target_group_port" {
+  default     = "8081"
+}
+
+variable "target_group_protocol" {
+  default     = "HTTP"
+}
+variable "health_check_protocol" {
+  default     = "HTTP"
+}
 variable "allow_cidr_block" {
   default     = "0.0.0.0/0"
   description = "Specify cird block that is allowd to acces the LoadBalancer"

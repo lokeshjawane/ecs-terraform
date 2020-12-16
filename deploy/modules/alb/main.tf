@@ -2,15 +2,15 @@
 
 resource "aws_alb_target_group" "default" {
   name                 = "${var.alb_name}-default"
-  port                 = 80
-  protocol             = "HTTP"
+  port                 = "${var.target_group_port}"
+  protocol             = "${var.target_group_protocol}"
   vpc_id               = "${var.vpc_id}"
   target_type          = "${var.target_type}"
   deregistration_delay = "${var.deregistration_delay}"
   health_check {
     path     = "${var.health_check_path}"
-    protocol = "HTTP"
-    port     = 80
+    protocol = "${var.health_check_protocol}"
+    port     = "${var.health_check_port}"
     matcher  = "200,302"
   }
 
