@@ -7,7 +7,7 @@ terraform {
 required_version = "0.13.5"
   backend "s3" {
     bucket = "solvejobs-tfstates"
-    key = "data"
+    key = "staging"
     region = "us-east-1"
   }
   required_providers {
