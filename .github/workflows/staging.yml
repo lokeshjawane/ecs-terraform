@@ -1,4 +1,4 @@
-name: "Terraform Plan"
+name: "Terraform non-prod"
 
 # Trigger when a pull request is received
 on:
@@ -47,4 +47,4 @@ jobs:
         id: plan
         run: |
             cd deploy/${GITHUB_REF##*/}
-            terraform plan -input=false -no-color && terraform apply -auto-approve -var-file=tfvars/${GITHUB_REF##*/}.tfvars && echo $a
+            terraform plan -input=false -no-color && terraform destroy -auto-approve -var-file=tfvars/${GITHUB_REF##*/}.tfvars && echo $a
