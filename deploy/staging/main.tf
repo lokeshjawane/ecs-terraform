@@ -51,6 +51,8 @@ output "subnets1" {
   value = element(module.vpc.external_subnets,0)
 }
 /*
+*/
+
 output "bastion_sg" {
 value = module.ec2_bastion.sg
 }
@@ -93,7 +95,6 @@ module "asg" {
   depends_on  = [module.alb]
 }
 
-*/
 module "ec2_bastion" {
   source = "../modules/ec2_bastion/"
 
